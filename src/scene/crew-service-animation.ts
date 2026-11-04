@@ -154,6 +154,15 @@ export function serviceHandMotion(kind: ServiceKind, phase: number) {
   return { across: 0, up: 0, turn: (kind === "bench" ? 0.34 : 0.28) * stroke };
 }
 
+// Calls are synchronous and sequential across actors. Reuse solver scratch
+// storage; no temporary vectors/quaternions are retained by a character.
+const reachScratch = {
+  original: [new T.Quaternion(), new T.Quaternion(), new T.Quaternion()],
+  wrist: new T.Vector3(), grip: new T.Vector3(), origin: new T.Vector3(),
+  from: new T.Vector3(), to: new T.Vector3(),
+  turn: new T.Quaternion(), world: new T.Quaternion(), parent: new T.Quaternion(),
+};
+
 /** Aim a two-bone chain without stretching its bones. The grip, rather than
  * the wrist pivot, touches the work surface. */
 export function reachServicePoint(
@@ -165,45 +174,34 @@ export function reachServicePoint(
   grip: T.Vector3,
   blend: number,
 ) {
-  const original = [
-    arm.quaternion.clone(),
-    forearm.quaternion.clone(),
-    hand.quaternion.clone(),
-  ];
-  const wristTarget = target
-    .clone()
-    .sub(grip.clone().applyQuaternion(handRotation));
+  if (blend <= 0) return;
+  const { original, wrist, origin, from, to, turn, world, parent } = reachScratch;
+  original[0].copy(arm.quaternion);
+  original[1].copy(forearm.quaternion);
+  original[2].copy(hand.quaternion);
+  wrist.copy(target).sub(reachScratch.grip.copy(grip).applyQuaternion(handRotation));
   for (let iteration = 0; iteration < 12; iteration++) {
-    for (const bone of [forearm, arm]) {
+    for (let joint = 0; joint < 2; joint++) {
+      const bone = joint === 0 ? forearm : arm;
       bone.updateWorldMatrix(true, true);
-      const origin = bone.getWorldPosition(new T.Vector3());
-      const from = hand
-        .getWorldPosition(new T.Vector3())
-        .sub(origin)
-        .normalize();
-      const to = wristTarget.clone().sub(origin).normalize();
-      const turn = new T.Quaternion().setFromUnitVectors(from, to);
-      const world = bone
-        .getWorldQuaternion(new T.Quaternion())
-        .premultiply(turn);
-      const parent = bone
-        .parent!.getWorldQuaternion(new T.Quaternion())
-        .invert();
+      bone.getWorldPosition(origin);
+      hand.getWorldPosition(from).sub(origin).normalize();
+      to.copy(wrist).sub(origin).normalize();
+      turn.setFromUnitVectors(from, to);
+      bone.getWorldQuaternion(world).premultiply(turn);
+      bone.parent!.getWorldQuaternion(parent).invert();
       bone.quaternion.copy(parent.multiply(world));
     }
   }
   hand.quaternion.copy(
     hand
-      .parent!.getWorldQuaternion(new T.Quaternion())
+      .parent!.getWorldQuaternion(parent)
       .invert()
       .multiply(handRotation),
   );
-  [arm, forearm, hand].forEach((bone, i) =>
-    bone.quaternion.slerpQuaternions(
-      original[i],
-      bone.quaternion.clone(),
-      blend,
-    ),
-  );
+  for (let i = 0; i < 3; i++) {
+    const bone = i === 0 ? arm : i === 1 ? forearm : hand;
+    bone.quaternion.slerpQuaternions(original[i], world.copy(bone.quaternion), blend);
+  }
   arm.updateWorldMatrix(true, true);
 }
