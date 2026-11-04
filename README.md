@@ -82,6 +82,8 @@ That test creates temporary identities in memory and exercises login, permanent 
 
 Read [ARCHITECTURE.md](ARCHITECTURE.md) for data flow and current trust boundaries. The repository also retains earlier game modules for reference; `/play` uses the workshop implementation listed above.
 
+Proposed next steps and their acceptance criteria are listed in [ROADMAP.md](ROADMAP.md).
+
 ## Repository scope
 
 The production game runs on Cloudflare Workers, SQLite Durable Objects and D1. This public repository replaces the owner's admin URL with `/local-admin` and omits deployment credentials, cloud resource IDs, private history, internal planning files and user data. Build and local-play code remain available for inspection. See [CONTRIBUTING.md](CONTRIBUTING.md) for development guidance.
