@@ -77,6 +77,7 @@ export class ServiceTraffic {
   update(delta: number, player?: { x: number; z: number }) {
     // Substeps also make review captures and irregular rendering frame rates agree.
     let remaining = Math.min(.1, Math.max(0, delta));
+    const elapsed = remaining;
     while (remaining > 0) {
       const dt = Math.min(remaining, 1 / 60); remaining -= dt; this.time += dt;
       this.yielding = false;
@@ -84,7 +85,7 @@ export class ServiceTraffic {
         // A newly requested customer waits offstage instead of materializing
         // inside a returning team car. Hidden entries are not road obstacles.
         if (this.obstacles.some(car => carsOverlap(this.pose, car, 1))) {
-          this.yielding = true; this.updateAmbient(dt); continue;
+          this.yielding = true; continue;
         }
         this.entryPending = false; this.client.root.visible = true;
       }
@@ -118,8 +119,10 @@ export class ServiceTraffic {
         this.client.animate(movement, this.pose.turning ? -.32 : 0, this.speed < oldSpeed || this.yielding, this.pose.turning, this.time);
       }
       if (this.phase === "stopped") this.client.animate(0, 0, true, false, this.time);
-      this.updateAmbient(dt);
     }
+    // Ambient cars do not participate in collision decisions. Animate their
+    // final pose once per frame rather than once per simulation substep.
+    this.updateAmbient(elapsed);
     this.root.userData = { phase: this.phase, yielding: this.yielding, distance: this.distance, speed: this.speed, cycles: this.cycles, dwell: this.dwell, x: this.pose.x, z: this.pose.z, yaw: this.pose.yaw, fleetId: this.client.id, rewardFree: true };
   }
   dispose() { this.client.dispose(); this.ambient.forEach(c => c.dispose()); this.root.removeFromParent(); }
