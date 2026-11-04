@@ -1,0 +1,150 @@
+.garage-camera-tools {
+  position: absolute;
+  top: 106px;
+  left: 24px;
+  z-index: 2;
+}
+.garage-camera-tools button {
+  font:
+    600 16px/1.2 "Barlow Condensed",
+    sans-serif;
+  cursor: pointer;
+  border-radius: 3px;
+}
+.garage-camera-trigger {
+  padding: 9px 18px;
+  border: 1px solid #b3aaa0;
+  color: #fff8e8;
+  background: #171b22ed;
+}
+.garage-camera-trigger:hover,
+.garage-camera-trigger[aria-expanded="true"] {
+  background: #b72827;
+}
+.garage-camera-panel {
+  margin-top: 8px;
+  width: min(300px, calc(100vw - 48px));
+  max-height: calc(100dvh - 190px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: #f5f1e8;
+  color: #242934;
+  padding: 16px;
+  border: 1px solid #8c8981;
+  font:
+    500 17px/1.3 "Barlow Condensed",
+    sans-serif;
+}
+.garage-camera-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.garage-camera-title h2 {
+  margin: 0;
+  font:
+    italic 800 19px/1.2 "Exo 2",
+    sans-serif;
+}
+.garage-camera-panel button {
+  padding: 8px 10px;
+  color: #242934;
+  border: 1px solid #99958a;
+  background: #fffdf8;
+}
+.garage-camera-panel button:hover {
+  background: #e6dfd2;
+}
+.garage-camera-panel p {
+  margin: 10px 0 14px;
+  font-size: 15px;
+}
+.garage-camera-fields {
+  display: grid;
+  gap: 11px;
+}
+.garage-camera-fields label > span {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+.garage-camera-fields output {
+  font-variant-numeric: tabular-nums;
+  color: #626059;
+}
+.garage-camera-fields input {
+  display: block;
+  width: 100%;
+  height: 23px;
+  margin: 3px 0 0;
+  padding: 0;
+  accent-color: #c3242c;
+  cursor: ew-resize;
+}
+.garage-camera-follow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 17px 0;
+}
+.garage-camera-follow input {
+  accent-color: #c3242c;
+  width: 17px;
+  height: 17px;
+  margin: 0;
+}
+.garage-camera-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.garage-camera-actions button:first-child {
+  color: #fff8e8;
+  background: #b72827;
+  border-color: #a32127;
+}
+.garage-camera-actions button:first-child:hover {
+  background: #9e2025;
+}
+.garage-camera-panel .garage-camera-status {
+  margin: 12px 0 0;
+  font-size: 14px;
+}
+.garage-camera-export {
+  display: grid;
+  gap: 7px;
+  margin-top: 12px;
+  font-size: 14px;
+}
+.garage-camera-export textarea {
+  width: 100%;
+  min-height: 160px;
+  padding: 8px;
+  resize: vertical;
+  color: #242934;
+  background: #fffdf8;
+  border: 1px solid #99958a;
+  font: 12px/1.4 monospace;
+}
+.garage-camera-tools :is(button, input, textarea):focus-visible {
+  outline: 2px solid #bb252c;
+  outline-offset: 3px;
+}
+.garage-camera-tools button:active {
+  transform: translateY(1px);
+}
+@media (max-width: 650px), (max-height: 600px) {
+  .garage-camera-tools {
+    left: 12px;
+    top: 90px;
+  }
+  .garage-camera-panel {
+    width: min(280px, calc(100vw - 24px));
+    padding: 12px;
+    max-height: calc(100dvh - 285px);
+  }
+  .garage-camera-fields {
+    gap: 8px;
+  }
+}

@@ -1,0 +1,368 @@
+@font-face {
+  font-family: "Barlow Condensed";
+  src: url("/fonts/Barlow-Condensed-italic-latin.woff2") format("woff2");
+  font-style: italic;
+  font-weight: 900;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Barlow Condensed";
+  src: url("/fonts/Barlow-Condensed-400-latin.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Barlow Condensed";
+  src: url("/fonts/Barlow-Condensed-500-latin.woff2") format("woff2");
+  font-weight: 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Exo 2";
+  src: url("/fonts/Exo-2-800-latin.woff2") format("woff2");
+  font-style: italic;
+  font-weight: 800;
+  font-display: swap;
+}
+body:has(.home-shell) {
+  overflow: hidden;
+  background: #222126;
+}
+.home-shell {
+  height: 100svh;
+  height: 100dvh;
+  overflow: hidden;
+  color: #fff8ef;
+  font-family: "Barlow Condensed", Arial, sans-serif;
+}
+.launch-play {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  background: #ef242c;
+  border: 2px solid #19151b;
+  border-radius: 9px;
+  transform: skew(-12deg);
+  color: #fff;
+  font:
+    800 italic clamp(28px, 2.7vw, 48px)/1 "Exo 2",
+    sans-serif;
+  letter-spacing: 0.025em;
+  text-shadow: 0 2px 3px #55101766;
+  box-shadow:
+    0 6px 0 #80191d,
+    0 9px 16px #16111944;
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease,
+    background 160ms ease;
+}
+.launch-play span,
+.launch-play svg {
+  transform: skew(12deg);
+}
+.home-shell .launch-play:is(:hover, :focus-visible) {
+  background: #ff393c;
+  transform: translateY(3px) skew(-12deg) scale(0.98);
+  box-shadow:
+    0 2px 0 #80191d,
+    0 3px 6px #16111944;
+  color: white;
+}
+.launch-play:active {
+  transform: translateY(5px) skew(-12deg) scale(0.97);
+  box-shadow: 0 0 0 #80191d;
+}
+.home-shell :is(a, button):focus-visible {
+  outline: 3px solid #fff8ef;
+  outline-offset: 5px;
+}
+.launch-home {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  isolation: isolate;
+}
+.launch-backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 50%;
+  z-index: -2;
+}
+.launch-shade {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(180deg, #10141d45, transparent 22%),
+    linear-gradient(90deg, #17182125, transparent 56%);
+  pointer-events: none;
+}
+.launch-copy {
+  position: absolute;
+  left: 4%;
+  top: 27%;
+  bottom: auto;
+  width: 49%;
+  max-width: 840px;
+}
+.launch-copy h1 {
+  margin: 0;
+  font:
+    900 italic clamp(58px, 7.1vw, 140px)/0.96 "Barlow Condensed",
+    Impact,
+    sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+  word-spacing: 0.035em;
+  text-shadow:
+    0 3px 2px #251a1640,
+    0 5px 12px #16131b66;
+  transform: none;
+  transform-origin: left bottom;
+}
+.launch-copy h1 span,
+.launch-copy h1 strong {
+  display: block;
+  width: max-content;
+  white-space: nowrap;
+  font-weight: 900;
+}
+.launch-copy h1 strong {
+  color: #ff2c24;
+}
+.launch-copy p {
+  font-size: clamp(20px, 1.8vw, 32px);
+  letter-spacing: 0.025em;
+  line-height: 1.35;
+  margin: 24px 0 34px;
+  text-shadow:
+    0 2px 3px #10141d99,
+    0 3px 7px #10141d66;
+  white-space: normal;
+}
+.launch-play {
+  width: clamp(350px, 30vw, 560px);
+  min-height: clamp(116px, 9.2vw, 164px);
+  padding: 0.45em 0.9em 0.55em;
+  font-size: clamp(40px, 3.5vw, 64px);
+  line-height: 1.2;
+  gap: 0.52em;
+  margin-left: 7px;
+}
+.launch-play svg {
+  display: block;
+  flex: none;
+  width: 0.32em;
+  height: 0.48em;
+  transform: skew(12deg) translateY(0.06em);
+  filter: drop-shadow(0 2px 2px #55101766);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 3;
+}
+.launch-portrait {
+  display: block;
+  height: 280px;
+  width: 100%;
+  object-fit: contain;
+  object-position: center bottom;
+}
+.characters .portrait {
+  height: 280px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+}
+@media (min-aspect-ratio: 2/1) {
+  .launch-copy {
+    top: 24%;
+    bottom: auto;
+  }
+  .launch-copy h1 {
+    font-size: min(6.8vw, 14vh);
+  }
+  .launch-copy p {
+    font-size: min(1.55vw, 3.5vh);
+    margin: 12px 0 18px;
+  }
+  .launch-play {
+    min-height: 96px;
+  }
+}
+@media (max-width: 850px) {
+  .launch-copy {
+    width: 80%;
+    top: auto;
+    bottom: 14%;
+    left: 6%;
+  }
+  .launch-copy h1 {
+    font-size: clamp(56px, 9vw, 80px);
+  }
+  .launch-copy p {
+    font-size: 23px;
+    white-space: normal;
+    max-width: 370px;
+  }
+  .launch-backdrop {
+    object-position: 65% 50%;
+  }
+  .launch-shade {
+    background:
+      linear-gradient(0deg, #141722cc, transparent 68%),
+      linear-gradient(180deg, #171b24a6, transparent 25%);
+  }
+}
+@media (max-width: 560px) {
+  .launch-copy {
+    width: 88%;
+    top: auto;
+    bottom: max(12%, env(safe-area-inset-bottom));
+    left: 6%;
+  }
+  .launch-copy h1 {
+    font-size: clamp(48px, 15vw, 72px);
+    transform: none;
+  }
+  .launch-copy p {
+    font-size: 22px;
+    max-width: 310px;
+    margin: 17px 0 22px;
+  }
+  .launch-play {
+    font-size: 40px;
+    width: 94%;
+    min-height: 112px;
+  }
+  .launch-backdrop {
+    object-position: 80% 50%;
+  }
+  .launch-shade {
+    background:
+      linear-gradient(0deg, #10141eed 0%, #15182295 26%, transparent 65%),
+      linear-gradient(180deg, #141823ac, transparent 30%);
+  }
+}
+@media (max-height: 500px) and (min-width: 561px) {
+  .launch-copy {
+    top: auto;
+    bottom: 10%;
+    width: 65%;
+  }
+  .launch-copy h1 {
+    font-size: min(8vw, 17vh);
+  }
+  .launch-copy p {
+    font-size: 14px;
+    margin: 10px 0 14px;
+    max-width: none;
+  }
+  .launch-play {
+    min-height: 68px;
+    width: 250px;
+    font-size: 25px;
+  }
+}
+@media (max-height: 650px) and (max-width: 560px) {
+  .launch-copy {
+    top: auto;
+    bottom: 9%;
+  }
+  .launch-copy h1 {
+    font-size: min(12vw, 10vh);
+  }
+  .launch-copy p {
+    margin: 12px 0;
+    font-size: 14px;
+  }
+  .launch-play {
+    min-height: 72px;
+    font-size: 25px;
+  }
+}
+/* The portrait composition keeps the whole car above the headline on phones. */
+@media (max-width: 600px) and (orientation: portrait) {
+  .launch-backdrop {
+    object-position: 35% 50%;
+  }
+  .launch-copy {
+    left: 6%;
+    width: 88%;
+    bottom: max(10%, env(safe-area-inset-bottom));
+  }
+  .launch-copy h1 {
+    font-size: clamp(48px, 15vw, 60px);
+  }
+}
+@media (max-width: 600px) and (orientation: portrait) and (max-height: 750px) {
+  .launch-copy h1 {
+    font-size: min(13vw, 8vh);
+  }
+  .launch-copy p {
+    font-size: 18px;
+    margin: 12px 0 18px;
+  }
+  .launch-play {
+    min-height: 80px;
+    font-size: 30px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .launch-play {
+    transition: none;
+  }
+}
+
+/* Both URLs share one mounted, unmoving garage image. */
+.landing-scene {
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  height: 100%;
+}
+.landing-view {
+  position: absolute;
+  inset: 0;
+}
+.landing-view[data-active="false"] {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+.landing-home {
+  transition:
+    opacity 180ms ease,
+    visibility 180ms;
+}
+.landing-whitelist[data-active="true"] {
+  animation: whitelist-arrive 380ms cubic-bezier(0.22, 0.8, 0.2, 1) both;
+}
+@keyframes whitelist-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.landing-home [tabindex="-1"]:focus {
+  outline: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .landing-home {
+    transition: none;
+  }
+  .landing-whitelist[data-active="true"] {
+    animation: none;
+  }
+}
+
+/* Play is a real route: keyboard, new tabs and direct links all open the workshop. */
+.launch-play { text-decoration: none; }

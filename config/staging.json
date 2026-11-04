@@ -1,0 +1,13 @@
+{
+  "environment": "staging",
+  "phase": "DEMO",
+  "published": false,
+  "gameplayEnabled": false,
+  "moneyRequested": false,
+  "money": null,
+  "walletConnect": null,
+  "publicSite": {
+    "approved": false,
+    "tokenLaunchConfirmed": false
+  }
+}

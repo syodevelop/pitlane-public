@@ -1,0 +1,33 @@
+{
+  "cssUrl": "https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@1,800&family=Barlow+Condensed:wght@400;500;600&display=swap",
+  "entries": [
+    {
+      "family": "Barlow Condensed",
+      "weight": "400",
+      "url": "https://fonts.gstatic.com/s/barlowcondensed/v13/HTx3L3I-JCGChYJ8VI-L6OO_au7B6xHT2g.woff2",
+      "file": "Barlow-Condensed-400-latin.woff2",
+      "bytes": 21164
+    },
+    {
+      "family": "Barlow Condensed",
+      "weight": "500",
+      "url": "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B4-Lwz3bWuQ.woff2",
+      "file": "Barlow-Condensed-500-latin.woff2",
+      "bytes": 21424
+    },
+    {
+      "family": "Barlow Condensed",
+      "weight": "600",
+      "url": "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B4873z3bWuQ.woff2",
+      "file": "Barlow-Condensed-600-latin.woff2",
+      "bytes": 22308
+    },
+    {
+      "family": "Exo 2",
+      "weight": "800",
+      "url": "https://fonts.gstatic.com/s/exo2/v26/7cH3v4okm5zmbtYtMeA0FKq0Jjg2drH0euC9hp8.woff2",
+      "file": "Exo-2-800-latin.woff2",
+      "bytes": 18256
+    }
+  ]
+}

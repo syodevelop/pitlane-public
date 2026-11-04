@@ -1,0 +1,115 @@
+export type ErrorPageKind = "not-found" | "unavailable" | "offline";
+export type StatusPageKind = ErrorPageKind;
+
+const messages = {
+  "not-found": {
+    code: "404",
+    status: "Page not found",
+    title: "Off the racing line.",
+    description:
+      "There's nothing at this address. Head back to Pitlane and take it from there.",
+    action: "Back to Pitlane",
+    href: "/",
+    footnote: "Check the address or return home.",
+  },
+  unavailable: {
+    code: "503",
+    status: "Temporarily unavailable",
+    title: "A short pit stop.",
+    description:
+      "Pitlane couldn't load this time. Try again in a moment or check our updates on X.",
+    action: "Try again",
+    href: "",
+    footnote: "Please try again in a moment.",
+  },
+  offline: {
+    code: "OFF",
+    status: "Connection lost",
+    title: "You're offline.",
+    description:
+      "Reconnect to get back to Pitlane. Whitelist applications need an internet connection.",
+    action: "Try again",
+    href: "",
+    footnote: "Reconnect, then reload this page.",
+  },
+} as const;
+
+const segments = {
+  a: "M20 4h40l10 10-10 10H20L10 14Z",
+  b: "M64 26l10-10 6 10v26l-8 8-8-8Z",
+  c: "M64 80l8-8 8 8v24l-6 10-10-10Z",
+  d: "M20 108h40l10 10-10 10H20l-10-10Z",
+  e: "M0 80l8-8 8 8v24L6 114l-6-10Z",
+  f: "M0 26l6-10 10 10v26l-8 8-8-8Z",
+  g: "M20 56h40l8 10-8 10H20l-8-10Z",
+};
+const digits: Record<string, string> = {
+  "0": "abcdef",
+  "3": "abcdg",
+  "4": "bcfg",
+  "5": "acdfg",
+  O: "abcdef",
+  F: "aefg",
+  S: "acdfg",
+  N: "bcef",
+};
+
+// Static project copy and geometry only. No request path or user input enters this markup.
+export function errorPageMarkup(kind: StatusPageKind) {
+  const content = messages[kind];
+  const display = [...content.code]
+    .map(
+      (digit, index) =>
+        `<g transform="translate(${index * 100} 0)">${Object.entries(segments)
+          .map(
+            ([name, path]) =>
+              `<path d="${path}" class="error-segment${digits[digit].includes(name) ? " is-on" : ""}"/>`,
+          )
+          .join("")}${digit === "N" ? '<path d="M18 24h13l32 78v10H50L18 34Z" class="error-segment is-on"/>' : ""}</g>`,
+    )
+    .join("");
+  return `<main class="error-page" id="main-content" tabindex="-1">
+  <section class="error-board" aria-labelledby="site-error-title">
+    <div class="error-board-top"><a class="error-brand" href="/" aria-label="Pitlane home">PITLANE<span aria-hidden="true">/</span></a><span class="error-status"><i aria-hidden="true"></i>${content.status}</span></div>
+    <div class="error-board-body">
+      <div class="error-display"><svg viewBox="0 0 ${content.code.length * 100 - 20} 132" role="img" aria-label="${content.code}" focusable="false">${display}</svg></div>
+      <div class="error-message"><h1 id="site-error-title">${content.title}</h1><p>${content.description}</p><a class="error-action" href="${content.href}"><span>${content.action}</span><span aria-hidden="true">↗</span></a></div>
+    </div>
+    <div class="error-board-bottom"><span>${content.footnote}</span><a href="https://x.com/playpitlane" target="_blank" rel="noopener noreferrer">Updates on X <span aria-hidden="true">↗</span></a></div>
+  </section>
+  </main>`;
+}
+
+// Shared by React and the self-contained Worker/offline fallback. No fonts or images required.
+export const errorPageStyles = `
+.error-page{--error-ink:#222126;--error-paper:#f4f1e8;--error-red:#ef242c;box-sizing:border-box;min-height:100svh;min-height:100dvh;margin:0;padding:40px 28px;display:grid;place-items:center;background:var(--error-ink);color:var(--error-paper);font:16px/1.5 Arial,Helvetica,sans-serif;font-synthesis:weight style}
+.error-page *{box-sizing:border-box}
+.error-page a{color:inherit;text-decoration:none}
+.error-page a:focus-visible{outline:3px solid var(--error-paper);outline-offset:6px}
+.error-page:focus{outline:none}
+.error-board{width:min(100%,940px);border:1px solid #57545a;background:#29272d}
+.error-board-top,.error-board-bottom{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:22px 28px;font:12px/1.5 Consolas,'Courier New',monospace}
+.error-board-top{border-bottom:1px solid #57545a}
+.error-brand{display:inline-flex;gap:12px;align-items:center;font-size:17px;font-weight:700;letter-spacing:.13em}
+.error-brand span{color:var(--error-red);font-size:25px;line-height:1}
+.error-status{display:flex;align-items:center;gap:9px;text-transform:uppercase;letter-spacing:.04em;color:#d0cbd0}
+.error-status i{width:7px;height:7px;background:var(--error-red);flex-shrink:0}
+.error-board-body{display:grid;grid-template-columns:1.15fr 1fr;gap:48px;align-items:center;padding:64px 40px}
+.error-display{padding:24px 0}
+.error-display svg{display:block;width:100%;height:auto;overflow:visible}
+.error-segment{fill:#353238}
+.error-segment.is-on{fill:var(--error-paper)}
+.error-message h1{font:800 clamp(30px,3.4vw,42px)/1.03 Arial,Helvetica,sans-serif;letter-spacing:-.045em;margin:0 0 20px;max-width:290px;text-wrap:balance}
+.error-message p{font:400 15px/1.65 Arial,Helvetica,sans-serif;color:#c2bdc3;margin:0 0 30px;max-width:310px}
+.error-page .error-action{display:flex;align-items:center;justify-content:space-between;gap:24px;min-height:52px;width:100%;max-width:310px;padding:15px 19px;background:#dd202b;color:#fff;font:700 14px/1.4 Arial,Helvetica,sans-serif;transition:background 140ms ease}
+.error-page .error-action:hover{background:#d71d29}
+.error-action span:last-child{font:400 24px/1 Arial,sans-serif}
+.error-board-bottom{border-top:1px solid #57545a;color:#b5afb7;font-size:11px}
+.error-board-bottom a{min-height:28px;display:inline-flex;align-items:center;gap:8px;color:var(--error-paper);white-space:nowrap;text-decoration:underline;text-underline-offset:4px}
+body:has(.error-page){margin:0;background:#222126;overflow:auto}
+@media(max-width:640px){.error-page{padding:24px 18px}.error-board-top{padding:17px 20px;align-items:flex-start}.error-brand{font-size:14px}.error-status{font-size:10px;max-width:135px;justify-content:flex-end;text-align:right}.error-board-body{grid-template-columns:1fr;gap:32px;padding:34px 24px 32px}.error-display{padding:0;max-width:280px;width:100%;margin:auto}.error-message h1{font-size:32px;max-width:none;margin-bottom:14px}.error-message p{font-size:14px;margin-bottom:24px;max-width:none}.error-page .error-action{max-width:none}.error-board-bottom{align-items:flex-start;padding:16px 20px;gap:14px;font-size:10px}.error-board-bottom>span{max-width:170px}}
+@media(max-width:360px){.error-page{padding:16px 12px}.error-board-top{padding:15px 17px}.error-board-body{padding:28px 20px;gap:26px}.error-display{max-width:230px}.error-message h1{font-size:30px}.error-board-bottom{padding:14px 17px}}
+@media(max-height:500px) and (min-width:641px){.error-page{padding:20px 24px}.error-board-top,.error-board-bottom{padding:14px 24px}.error-board-body{padding:28px;gap:36px}.error-display{padding:0;max-width:300px}.error-message h1{font-size:30px;margin-bottom:12px}.error-message p{font-size:13px;margin-bottom:18px}.error-page .error-action{min-height:44px;padding:10px 16px}}
+@media(prefers-reduced-motion:reduce){.error-page .error-action{transition:none}}
+@media(forced-colors:active){.error-board,.error-page .error-action{border:1px solid CanvasText}.error-segment{fill:Canvas}.error-segment.is-on{fill:CanvasText}.error-status i{background:CanvasText}}
+`;

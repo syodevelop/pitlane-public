@@ -1,0 +1,71 @@
+html {
+  background: #222126;
+}
+.garage-picture {
+  display: contents;
+}
+.contact-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 18px;
+  font:
+    400 14px/1.4 "Barlow Condensed",
+    Arial,
+    sans-serif;
+}
+.contact-links a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.wl-panel-footer {
+  flex-wrap: wrap;
+}
+.wl-panel-footer .contact-links {
+  font-size: 13px;
+  gap: 10px;
+}
+.site-footer {
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.site-loading {
+  padding: 20px 0;
+  color: #67656a;
+  font:
+    400 18px/1.4 "Barlow Condensed",
+    sans-serif;
+}
+.wl-state-message {
+  font-size: 16px;
+  color: #67656a;
+}
+.site-skip {
+  position: fixed;
+  left: 20px;
+  top: 10px;
+  z-index: 30;
+  padding: 12px 18px;
+  background: #f4f1e8;
+  color: #181d27;
+  transform: translateY(-200%);
+}
+.site-skip:focus {
+  transform: none;
+}
+@media (max-width: 600px) {
+  .wl-panel-footer {
+    gap: 6px 14px;
+  }
+  .wl-panel-footer .contact-links {
+    gap: 9px;
+  }
+}
+@media (forced-colors: active) {
+  .wl-check,
+  .wl-close,
+  .wl-task,
+  .wl-primary {
+    border: 1px solid ButtonText;
+  }
+}

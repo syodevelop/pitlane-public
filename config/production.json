@@ -1,0 +1,13 @@
+{
+  "environment": "production",
+  "phase": "DEMO",
+  "published": true,
+  "gameplayEnabled": true,
+  "moneyRequested": false,
+  "money": null,
+  "walletConnect": null,
+  "publicSite": {
+    "approved": false,
+    "tokenLaunchConfirmed": false
+  }
+}

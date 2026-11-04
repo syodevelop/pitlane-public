@@ -1,0 +1,33 @@
+{
+  "css": "https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@1,900&family=Roboto:ital,wght@0,100..900;1,100..900&family=Russo+One&display=swap",
+  "fonts": [
+    {
+      "family": "Barlow Condensed",
+      "style": "italic",
+      "file": "Barlow-Condensed-italic-latin.woff2",
+      "url": "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxyL3I-JCGChYJ8VI-L6OO_au7B6xTrW3bmu4kG.woff2",
+      "bytes": 23212
+    },
+    {
+      "family": "Roboto",
+      "style": "italic",
+      "file": "Roboto-italic-latin.woff2",
+      "url": "https://fonts.gstatic.com/s/roboto/v51/KFO5CnqEu92Fr1Mu53ZEC9_Vu3r1gIhOszmkBnka.woff2",
+      "bytes": 47208
+    },
+    {
+      "family": "Roboto",
+      "style": "normal",
+      "file": "Roboto-normal-latin.woff2",
+      "url": "https://fonts.gstatic.com/s/roboto/v51/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3yUBA.woff2",
+      "bytes": 43136
+    },
+    {
+      "family": "Russo One",
+      "style": "normal",
+      "file": "Russo-One-normal-latin.woff2",
+      "url": "https://fonts.gstatic.com/s/russoone/v18/Z9XUDmZRWg6M1LvRYsHOz8mJ.woff2",
+      "bytes": 7344
+    }
+  ]
+}

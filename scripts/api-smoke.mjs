@@ -1,0 +1,67 @@
+import assert from "node:assert/strict";
+import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
+const account = privateKeyToAccount(generatePrivateKey()); // Ephemeral, unfunded test identity, never saved.
+const origin = "http://127.0.0.1:5173", base = "http://127.0.0.1:8787/api/";
+for (const path of ["/", "/play", "/docs", "/art/gus.webp"]) assert.equal((await fetch("http://127.0.0.1:8787"+path)).status,200);
+for (const path of ["/faq","/leaderboard","/creators","/collabs","/fusion","/transparency","/reports"]) assert.equal((await fetch("http://127.0.0.1:8787"+path)).status,404);
+let cookie="", state;
+async function req(path,data,expected=200,auth=true) {
+  if(path==="command") data={schemaVersion:2,ruleset:"garage-v0.2-prototype",generation:state.progress.generation,...data};
+  const response=await fetch(base+path,{method:data===undefined?"GET":"POST",headers:{Origin:origin,"X-Pitlane-Account":account.address,...(data===undefined?{}:{"Content-Type":"application/json"}),...(auth&&cookie?{Cookie:cookie}:{})},body:data===undefined?undefined:JSON.stringify(data)});
+  const result=await response.json();assert.equal(response.status,expected,JSON.stringify(result));
+  if(response.headers.get("set-cookie"))cookie=response.headers.get("set-cookie").split(";")[0];
+  return result;
+}
+const intent=command=>({id:crypto.randomUUID(),version:state.progress.revision,command});
+async function command(command){const result=await req("command",intent(command));state=result.state;return result;}
+await req("state",undefined,401);
+const challenge=await req("auth/challenge",{address:account.address});
+const signature=await account.signMessage({message:challenge.message});
+await req("auth/verify",{address:account.address,message:challenge.message+" changed",signature},401);
+await req("auth/verify",{address:account.address,message:challenge.message,signature});
+await req("auth/verify",{address:account.address,message:challenge.message,signature},401);
+state=(await req("state")).state;
+assert.equal(state.profile.character,null);
+assert.equal(state.profile.identity,account.address.toLowerCase());
+const select=intent({type:"select",character:"Gus"});
+const simultaneous=await Promise.all([req("command",select),req("command",select)]);
+assert.equal(simultaneous.filter(r=>r.duplicate).length,1);state=simultaneous[0].state;
+assert.equal((await req("command",select)).duplicate,true);
+await req("command",{...select,command:{type:"select",character:"Dash"}},409);
+await req("command",{...intent({type:"move",actorId:"player",target:{x:95,y:100}}),version:0},409);
+await req("command",{...intent({type:"interact",station:"reception"}),generation:"retired-demo"},409);
+await req("command",{...intent({type:"interact",station:"reception"}),credits:999},400);
+await req("command",intent({type:"grantPurchase",tier:5}),400);
+await req("command",intent({type:"putDown",actorId:"player",station:"reception",amount:2}),409);
+const csrf=await fetch(base+"command",{method:"POST",headers:{Origin:"https://attacker.invalid","Content-Type":"application/json",Cookie:cookie},body:JSON.stringify(select)});assert.equal(csrf.status,403);
+await command({type:"move",actorId:"player",target:{x:95,y:100}});
+await req("command",intent({type:"pickUp",actorId:"player",station:"stock",amount:2}),409);
+await new Promise(resolve=>setTimeout(resolve,2500));state=(await req("state")).state;
+const pickup=intent({type:"pickUp",actorId:"player",station:"stock",amount:2});
+state=(await req("command",pickup)).state;
+assert.equal(state.progress.actors.player.carrying,0);
+const taskId=state.progress.actors.player.taskId;
+await req("command",intent({type:"completeWork",taskId}),409);
+await new Promise(resolve=>setTimeout(resolve,9500));
+state=(await req("state")).state;
+assert.equal(state.progress.actors.player.carrying,2);assert.equal(state.progress.rep,0);
+state=(await req("command",pickup)).state;assert.equal(state.progress.actors.player.carrying,2);
+assert.equal(state.progress.partsIssued,2);assert.equal(state.progress.receipts&&Object.keys(state.progress.receipts).length,0);
+await command({type:"move",actorId:"player",target:{x:280,y:100}});
+await new Promise(resolve=>setTimeout(resolve,2200));state=(await req("state")).state;
+await command({type:"putDown",actorId:"player",station:"tires",amount:2});
+assert.equal(state.progress.stock.tires,2);assert.equal(state.progress.actors.player.carrying,0);assert.equal(state.progress.rep,0);
+await req("command",intent({type:"navigate",actorId:"player",target:{x:400,y:225}}),409);
+await req("command",intent({type:"navigate",actorId:"player",target:{x:660,y:350},via:[]}),400);
+await req("command",intent({type:"navigate",actorId:"player",target:{x:950,y:100}}),409);
+await command({type:"navigate",actorId:"player",target:{x:660,y:350}});
+assert.ok(state.progress.actors.player.travel.via.length>0);
+const arrival=state.progress.actors.player.travel.endsAt;
+await req("command",intent({type:"interact",station:"race"}),409);
+await new Promise(resolve=>setTimeout(resolve,Math.max(0,arrival-Date.now())+150));
+state=(await req("state")).state;
+assert.deepEqual(state.progress.actors.player.position,{x:660,y:350});
+assert.equal(state.progress.rep,0);
+await req("auth/logout",{});await req("state",undefined,401);
+console.log("API v2 smoke passed: four routes/assets, exact SIWE/replay, session/CSRF, concurrent idempotency, revision/generation boundaries, injected rewards/purchases rejected, timed physical parts and logout.");
+

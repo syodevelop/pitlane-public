@@ -1,0 +1,18 @@
+{
+  "sourceCommit": "23d7a4a0658370a13f161c54ab98069b547ff40e",
+  "exportedOn": "2026-11-04",
+  "runtimeCode": "Unmodified committed src/, server/, shared/, packages/ and migrations/.",
+  "configurationChanges": [
+    "Example admin path: /local-admin",
+    "Owner deployment configuration and automatic deployment hooks omitted"
+  ],
+  "excluded": [
+    "Private Git history",
+    "Internal plans, prompts and reference documents",
+    "Secrets and environment files",
+    "Cloud account and database IDs",
+    "Databases, player and whitelist records",
+    "Local QA output and working exports",
+    "Uncommitted local token-address experiment"
+  ]
+}
