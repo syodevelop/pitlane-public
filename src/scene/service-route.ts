@@ -66,7 +66,15 @@ export function clipWalkAtCar(from: { x: number; z: number }, to: { x: number; z
 
 /** Keep the free component of movement along a bumper instead of sticking
  * whenever diagonal input has a small component into the vehicle. */
-export function slideWalkAtCar(from: { x: number; z: number }, to: { x: number; z: number }, car: VehiclePose) {
+export function slideWalkAtCar(from: { x: number; z: number }, to: { x: number; z: number }, car: VehiclePose): { x: number; z: number } {
+  // Resolve tangential movement in the obstacle's frame, so rotated cars do
+  // not turn free movement along a door into movement through that door.
+  if (Math.abs(car.yaw) > 1e-8) {
+    const c = Math.cos(car.yaw), s = Math.sin(car.yaw);
+    const local = (p: { x: number; z: number }) => ({ x: (p.x-car.x)*c-(p.z-car.z)*s, z: (p.x-car.x)*s+(p.z-car.z)*c });
+    const result = slideWalkAtCar(local(from), local(to), { ...car, x: 0, z: 0, yaw: 0 });
+    return { x: car.x+result.x*c+result.z*s, z: car.z-result.x*s+result.z*c };
+  }
   const direct = clipWalkAtCar(from, to, car);
   if (Math.hypot(direct.x - to.x, direct.z - to.z) < .0001) return direct;
   const xFirst = clipWalkAtCar(from, { x: to.x, z: from.z }, car);

@@ -1,5 +1,5 @@
 import { expect, it } from "vitest";
-import { clipWalkAtCar, insideCar, sampleServiceRoute, SERVICE_ROUTE, SERVICE_ROUTE_LENGTH, SERVICE_STOP_DISTANCE } from "../src/scene/service-route";
+import { clipWalkAtCar, slideWalkAtCar, insideCar, sampleServiceRoute, SERVICE_ROUTE, SERVICE_ROUTE_LENGTH, SERVICE_STOP_DISTANCE } from "../src/scene/service-route";
 
 it("drives west on the lower north lane, stops north-facing, then joins the eastbound upper lane", () => {
   expect(sampleServiceRoute(0)).toMatchObject({ x: 43, z: SERVICE_ROUTE.lowerLaneZ, yaw: Math.PI / 2 });
@@ -26,5 +26,21 @@ it("clips walking at a car's rotated footprint and allows leaving a restored ove
     expect(result.x).toBeLessThan(0);
     expect(clipWalkAtCar({ x: 0, z: 0 }, { x: 5, z: 0 }, car)).toEqual({ x: 5, z: 0 });
     expect(clipWalkAtCar({ x: -5, z: 5 }, { x: 5, z: 5 }, car)).toEqual({ x: 5, z: 5 });
+  }
+});
+
+it("preserves sliding distance along a door regardless of the car's orientation", () => {
+  const from = {x:1.43,z:-1}, to={x:1.2,z:-.6};
+  const base = {x:0,z:0,yaw:0,turning:false};
+  const expected=slideWalkAtCar(from,to,base);
+  expect(expected.z).toBeCloseTo(to.z);
+  for(const yaw of [.2,.7,1.2,2.4,-.8]) {
+    const c=Math.cos(yaw),s=Math.sin(yaw);
+    const rotate=(p:{x:number;z:number})=>({x:8+p.x*c+p.z*s,z:3-p.x*s+p.z*c});
+    const car={...base,x:8,z:3,yaw};
+    const actual=slideWalkAtCar(rotate(from),rotate(to),car),wanted=rotate(expected);
+    expect(actual.x).toBeCloseTo(wanted.x,8);
+    expect(actual.z).toBeCloseTo(wanted.z,8);
+    expect(insideCar(actual,car)).toBe(false);
   }
 });
